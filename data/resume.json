@@ -1,0 +1,21 @@
+
+{
+  "name": "Алексей Иванов",
+  "target_position": "Junior Data Analyst",
+  "skills": [
+    "Python",
+    "SQL",
+    "Pandas",
+    "Excel",
+    "Data Analysis",
+    "Data Visualization"
+  ],
+  "experience_years": 0,
+  "experience_description": "Учебные проекты по анализу данных",
+  "expected_salary": 150000,
+  "education": "Высшее образование",
+  "projects": [
+    "Анализ данных с использованием Python и Pandas",
+    "Визуализация данных с помощью Matplotlib"
+  ]
+}
