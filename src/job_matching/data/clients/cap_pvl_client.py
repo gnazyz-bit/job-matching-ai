@@ -7,7 +7,6 @@ import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
-
 # Адрес API
 BASE_URL = "https://backend.cap-pvl.kz/api/vacancies"
 
@@ -226,4 +225,4 @@ if __name__ == "__main__":
     except (RuntimeError, OSError) as error:
         print(f"\nОшибка: {error}")
         print("Новый CSV не сохранён. Предыдущий файл не заменён.")
-        raise SystemExit(1)
+        raise SystemExit(1) from error

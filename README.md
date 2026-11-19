@@ -1,426 +1,598 @@
-
 # Job Matching AI
 
-A machine learning project for matching candidate resumes with job vacancies based on professional skills, experience, job titles, and salary expectations.
+A Python-based project for matching candidate resumes with job vacancies using text similarity and structured candidate information.
 
-**Project status:** Work in Progress (WIP)
-
-## Project Overview
-
-The goal of this project is to develop a job matching system that:
-
-1. Identifies suitable vacancies for a candidate and explains the matching results.
-2. Provides recommendations for improving the candidate's resume.
-3. Generates a short cover letter tailored to a selected vacancy.
+**Project Status:** Work in Progress (WIP)
 
 The project is being developed as part of an internship assignment.
 
-## Data Source
+## 1. Project Overview
 
-Job vacancies are retrieved from the following API:
+Job Matching AI aims to help candidates identify relevant job opportunities based on their professional profiles.
+
+The planned system will:
+
+1. Recommend suitable job vacancies.
+2. Evaluate compatibility based on skills, experience, education, and salary expectations.
+3. Explain vacancy matching results.
+4. Suggest improvements to candidate resumes.
+5. Generate personalized cover letters for selected vacancies.
+
+The current implementation provides a baseline matching algorithm based on job title similarity using TF-IDF and cosine similarity.
+
+It does not yet evaluate the complete professional suitability of a candidate.
+
+## 2. Data Sources
+
+### 2.1. CAP-PVL API
+
+The initial vacancy dataset was collected from:
 
 https://backend.cap-pvl.kz/api/vacancies
 
-The dataset includes:
+The collected dataset contains the following fields:
 
-- Job title
-- Job description
-- Salary range
-- Qualification
-- Company
-- Vacancy status
-- Creation date
+| Field | Description |
+|---|---|
+| id | Vacancy identifier |
+| title | Job title |
+| description | Vacancy description |
+| salary_from | Lower salary value |
+| salary_to | Upper salary value |
+| qualification | Qualification information |
+| company | Employer name |
+| status | Vacancy status |
+| created_at | Vacancy creation timestamp |
 
-### Data Limitations
+The collected dataset is stored at:
 
-During exploratory data analysis, several limitations were identified:
+`data/raw/cap_pvl/vacancies.csv`
 
-- Job descriptions duplicate job titles.
-- Detailed skill requirements are unavailable.
-- Experience requirements are not sufficiently specified.
-- Qualification information is not detailed enough for comprehensive candidate matching.
+### 2.2. Himalayas API (Planned)
 
-These limitations were checked across different API pages.
+The next development stage will integrate the Himalayas remote jobs API.
 
-For further development, synthetic job requirements will be prepared to support matching based on skills and professional experience.
+API endpoint:
 
-Synthetic requirements will be stored separately from the original API data.
+https://himalayas.app/jobs/api
 
-## Current Implementation
+The purpose of this integration is to obtain more informative vacancy descriptions and investigate the availability of structured job requirements.
 
-The following components have been implemented:
+Himalayas integration has not yet been implemented.
 
-### 1. Vacancy Data Collection
+Future data will be stored separately in:
 
-`fetch_vacancies.py`
+`data/raw/himalayas/`
 
-- Retrieves vacancies from the API.
-- Handles paginated API responses.
-- Extracts relevant vacancy information.
-- Removes duplicate vacancy IDs.
-- Saves the dataset as CSV.
+## 3. Exploratory Data Analysis
 
-### 2. Exploratory Data Analysis
+The initial CAP-PVL dataset was analyzed to evaluate its suitability for resume-to-vacancy matching.
 
-`analyze_vacancies.py`
+### Dataset Summary
 
-- Analyzes missing values.
-- Examines salary distributions.
-- Identifies frequently occurring job titles.
-- Checks qualification information.
-- Evaluates job description quality.
-- Analyzes vacancy creation dates.
+| Metric | Result |
+|---|---:|
+| Total vacancies | 31,350 |
+| Distinct companies | 2,674 |
+| Descriptions identical to job titles | 29,025 |
+| Percentage of duplicated descriptions | 92.58% |
+| Descriptions different from job titles | 2,325 |
+| Records with qualification = noExperience | 31,350 |
 
-### 3. API Data Quality Validation
+These results describe the collected dataset snapshot, not the current total number of vacancies available through the API.
 
-`check_api_pages.py`
+### Data Quality Limitations
 
-- Checks data from different API pages.
-- Compares job descriptions with job titles.
-- Examines qualification information.
-- Analyzes vacancy dates.
+Several important limitations were identified:
 
-### 4. Job Title Analysis
+- Most vacancy descriptions repeat the job title.
+- Detailed skill requirements are generally unavailable.
+- Experience requirements are insufficiently specified.
+- Qualification information is not reliable enough for comprehensive matching.
+- Salary values of zero require further interpretation.
+- Vacancy creation dates do not confirm current vacancy availability.
 
-`check_job_titles.py`
+Although the saved dataset contains no missing values in its main columns, populated fields do not necessarily contain meaningful information.
 
-- Searches for potentially relevant job titles using predefined keywords.
-- Displays matching vacancies and salary information.
+In particular, the value `noExperience` appears in every record. This should not be interpreted as proof that every employer accepts candidates without experience.
 
-### 5. Synthetic Resume
+### Conclusion
 
-`resume.json`
+The initial dataset supports baseline job title matching but is insufficient for reliable matching based on professional skills and experience.
 
-A fictional candidate profile containing:
+More informative vacancy data is required to improve matching quality.
+
+## 4. Current Implementation
+
+The project has been refactored into a modular Python package.
+
+### 4.1. Domain Models
+
+Pydantic models are used to represent and validate structured resume and vacancy data.
+
+Implemented models:
+
+- `Resume`
+- `Vacancy`
+
+The models support information such as:
 
 - Target position
-- Technical skills
+- Skills
 - Professional experience
-- Salary expectations
 - Education
-- Academic projects
+- Salary expectations
+- Vacancy title
+- Vacancy description
+- Employer information
 
-### 6. Initial Feature Engineering
+Not all of these fields are currently used by the matching algorithm.
 
-`feature_engineering.py`
+### 4.2. Data Repositories
 
-Implemented methods:
+The project separates data access from matching logic.
 
-- Job title normalization using a predefined dictionary.
+**VacancyRepository**
+
+Responsible for:
+
+- Loading vacancy datasets from CSV.
+- Validating essential dataset structure.
+- Saving processed results.
+- Logging data operations.
+
+**ResumeRepository**
+
+Responsible for:
+
+- Loading resumes from JSON.
+- Validating resume information using Pydantic.
+- Handling invalid or missing files.
+- Logging resume loading operations.
+
+### 4.3. Text Preprocessing
+
+The preprocessing module normalizes candidate target positions.
+
+A predefined dictionary translates selected English job titles into Russian equivalents.
+
+For example:
+
+`Data Analyst` → `аналитик данных`
+
+This is a limited normalization mechanism rather than a general translation system.
+
+### 4.4. TF-IDF Similarity
+
+The current baseline uses:
+
 - TF-IDF vectorization.
-- Cosine similarity calculation.
-- Preliminary vacancy ranking based on job title similarity.
-- Exporting calculated similarity scores to CSV.
+- Word unigrams and bigrams.
+- Cosine similarity.
 
-Currently, similarity is calculated between the candidate's target position and vacancy titles.
+Similarity is calculated between the candidate's target position and vacancy titles.
 
-## Technologies
+The current model does not use vacancy descriptions, skills, experience, education, or salary information in its ranking score.
 
-- Python
+### 4.5. Vacancy Ranking
+
+Vacancies are sorted in descending order of their calculated title similarity scores.
+
+The system:
+
+1. Loads a resume.
+2. Loads vacancy data.
+3. Normalizes the candidate's target position.
+4. Calculates TF-IDF similarity scores.
+5. Ranks vacancies.
+6. Displays the top 10 results.
+7. Saves the complete ranked dataset to CSV.
+
+### 4.6. Logging and Validation
+
+The refactored implementation includes:
+
+- Structured logging.
+- Input validation.
+- Error handling.
+- Type hints.
+- Separation of responsibilities between modules.
+
+## 5. Technologies
+
+The project uses:
+
+- Python 3.9+
 - Pandas
-- Requests
+- NumPy
 - Scikit-learn
-- TF-IDF
-- Cosine Similarity
+- Requests
+- Pydantic
+- Pytest
+- Ruff
+- Git
 
-## Project Structure
+## 6. Project Structure
 
 ```text
 job-matching-ai/
+│
+├── archive/
+│   ├── check_api_pages.py
+│   ├── check_job_titles.py
+│   ├── feature_engineering.py
+│   ├── feature_engineering_original.py
+│   ├── hh_loader.py
+│   └── load_resume.py
+│
 ├── data/
-│   ├── vacancies.csv
-│   ├── vacancies_features.csv
-│   └── resume.json
-├── fetch_vacancies.py
-├── analyze_vacancies.py
-├── check_api_pages.py
-├── check_job_titles.py
-├── load_resume.py
-├── feature_engineering.py
-├── requirements.txt
+│   ├── raw/
+│   │   ├── cap_pvl/
+│   │   │   └── vacancies.csv
+│   │   └── himalayas/
+│   │
+│   ├── processed/
+│   │   ├── vacancies_features_resume_cook.csv
+│   │   └── vacancies_features_resume_data_analyst.csv
+│   │
+│   └── samples/
+│       ├── resume_cook.json
+│       └── resume_data_analyst.json
+│
+├── scripts/
+│   ├── analyze_vacancies.py
+│   ├── compare_models.py
+│   └── match_resume.py
+│
+├── src/
+│   └── job_matching/
+│       ├── __init__.py
+│       ├── config.py
+│       │
+│       ├── domain/
+│       │   ├── __init__.py
+│       │   └── models.py
+│       │
+│       ├── data/
+│       │   ├── __init__.py
+│       │   ├── repository.py
+│       │   ├── resume_repository.py
+│       │   └── clients/
+│       │       ├── __init__.py
+│       │       └── cap_pvl_client.py
+│       │
+│       ├── matching/
+│       │   ├── __init__.py
+│       │   ├── preprocessing.py
+│       │   ├── similarity.py
+│       │   └── ranking.py
+│       │
+│       └── services/
+│           ├── __init__.py
+│           └── matching_service.py
+│
+├── tests/
+│   ├── test_matching_service.py
+│   ├── test_models.py
+│   └── test_repository.py
+│
 ├── .gitignore
+├── pyproject.toml
+├── requirements.txt
 └── README.md
 ```
 
-## Installation
+The `archive/` directory contains previous scripts retained for reference.
 
-Clone the repository:
+The main application logic is located in `src/job_matching/`.
 
-```bash
-git clone https://github.com/
-cd job-matching-ai
-```
+## 7. Installation
 
-Create a virtual environment:
+### Step 1. Clone the Repository
 
 ```bash
-python -m venv .venv
-```
-
-Activate it on Windows:
-
-```powershell
-.venv\Scripts\Activate.ps1
-```
-
-Install dependencies:
-
-```bash
-pip install -r requirements.txt
-```
-
-## Usage
-Job Matching AI
-A learning project for matching fictional candidate resumes with job vacancies.
-Developed as an internship assignment.
-
-Status: work in progress. Vacancy collection, data inspection, and initial
-feature engineering are implemented. A supervised matching model has not yet
-been trained.
-Project goal
-The completed system should:
-1. Recommend suitable vacancies and explain the results.
-2. Suggest improvements to the candidate's resume.
-3. Generate a short cover letter for a selected vacancy.
-The current implementation calculates job title similarity only. It does
-not yet decide whether a vacancy is professionally suitable for a candidate.
-Implemented features
-- Collect all vacancy pages by following the API's hydra:next links.
-- Retry temporary HTTP errors and check the downloaded record count against
-  the total reported by the API.
-- Remove duplicate vacancy IDs and save the data to CSV.
-- Replace the saved vacancy CSV only after successful collection and writing.
-- Inspect missing values, salaries, qualifications, descriptions, and dates.
-- Use two fictional resumes: a junior data analyst and a cook.
-- Select the resume file through a command-line argument.
-- Normalize selected English target job titles with a small manual dictionary.
-- Calculate TF-IDF and cosine similarity between the target position and all
-  downloaded vacancy titles.
-- Display the top 10 results, including available vacancy IDs, companies, and
-  salary fields.
-- Save all ranked vacancies separately for each resume filename.
-Data source
-Vacancies are collected from:
-
-https://backend.cap-pvl.kz/api/vacancies
-
-The loader saves these fields:
-Column	Meaning
-id	Vacancy identifier from the API; IDs need not be consecutive
-title	Job title
-description	Description supplied by the API
-salary_from	Lower salary field supplied by the API
-salary_to	Upper salary field supplied by the API
-qualification	Qualification value supplied by the API
-company	Organization name
-status	Vacancy status supplied by the API
-created_at	Creation timestamp supplied by the API
-
-
-Findings from the inspected full download
-These figures describe the inspected snapshot, not a permanent API total:
-Measure	Result
-Vacancies	31,350
-Distinct company names	2,674
-Descriptions equal to titles, ignoring case and surrounding spaces	29,025 (92.58%)
-Descriptions different from titles	2,325 (7.42%)
-Records with qualification = noExperience	31,350
-
-
-Pandas reported no missing values in the saved columns. However, populated
-fields are not necessarily informative: some inspected descriptions only
-repeat a title or name the employer's industry.
-
-Dedicated skill and required-experience columns are not present in the saved
-CSV. Whether other API fields provide this information still needs to be
-checked. Different descriptions do not automatically contain job requirements.
-
-Zero salary values require clarification before salary compatibility is
-implemented. They should not automatically be interpreted as a real salary of
-zero. Likewise, the uniform noExperience value is not sufficient evidence
-that every employer accepts applicants without experience.
-
-Creation dates and API status values alone do not establish that a vacancy is
-still accepting applications.
-Fictional resumes
-All candidate profiles are fictional and are not taken from an applicant database.
-File	Target position	Experience	Expected monthly salary
-data/resume.json	Junior Data Analyst	0 years	150,000 KZT
-data/resume_cook.json	Cook (Повар)	2 years	200,000 KZT
-
-
-The resumes include skills, education, experience, and projects. At present,
-only target_position is used in similarity calculation. Changing the
-other resume fields will not change the current scores.
-Project structure
-job-matching-ai/
-├── data/
-│   ├── vacancies.csv
-│   ├── resume.json
-│   ├── resume_cook.json
-│   ├── vacancies_features_resume.csv       # generated
-│   └── vacancies_features_resume_cook.csv  # generated
-├── fetch_vacancies.py
-├── analyze_vacancies.py
-├── check_api_pages.py
-├── check_job_titles.py
-├── load_resume.py
-├── feature_engineering.py
-├── requirements.txt
-├── .gitignore
-└── README.md
-Older project versions may also contain data/vacancies_features.csv. The
-updated feature script writes the resume-specific output files shown above;
-the older file is not used as its input.
-Installation
-Clone the repository and enter its directory:
 git clone https://github.com/gnazyz-bit/job-matching-ai.git
 cd job-matching-ai
-Create a virtual environment:
+```
+
+### Step 2. Create a Virtual Environment
+
+```bash
 python -m venv .venv
-Activate it in Windows PowerShell:
+```
+
+### Step 3. Activate the Environment
+
+Windows PowerShell:
+
+```powershell
 .\.venv\Scripts\Activate.ps1
-Or activate it on Linux/macOS:
+```
+
+Linux/macOS:
+
+```bash
 source .venv/bin/activate
-Install dependencies:
-pip install -r requirements.txt
-Usage
-Run the commands below from the project directory.
-1. Download or refresh vacancies
-python fetch_vacancies.py
-This collects all pages and saves data/vacancies.csv. Collection may take a
-long time because the API returns a small number of vacancies per page. The
-download does not resume after interruption; a new run starts from page one.
-If the downloaded count differs from the total reported on the first page,
-the loader stops without replacing the previous CSV. Changes to the source
-during collection can cause such a mismatch.
-
-Download once, then reuse the saved CSV. Run the loader again when a fresh
-snapshot is needed; changing a resume does not require a new API download.
-2. Inspect the downloaded data
-python analyze_vacancies.py
-Optional diagnostic scripts:
-python check_api_pages.py
-python check_job_titles.py
-python load_resume.py
-check_api_pages.py makes additional API requests to selected pages.
-check_job_titles.py searches the saved CSV with predefined keywords; it does
-not determine professional suitability. load_resume.py displays the original
-data/resume.json profile.
-3. Rank titles for the data analyst resume
-python feature_engineering.py data/resume.json
-Output: data/vacancies_features_resume.csv.
-4. Rank titles for the cook resume
-python feature_engineering.py data/resume_cook.json
-Output: data/vacancies_features_resume_cook.csv.
-
-Without an argument, the feature script uses data/resume.json:
-python feature_engineering.py
-Relative resume paths are resolved from the directory containing
-feature_engineering.py. Absolute resume paths are also supported. The source
-vacancy CSV and generated results are located in that script's data directory.
-
-Output names use the resume filename without its extension. Different resume
-filenames therefore produce separate results. Running the same resume again
-replaces its previous result; files with the same stem share the same output.
-Understanding the current results
-The script adds title_similarity to every vacancy, sorts descending, and
-prints the first 10 rows. The saved CSV contains all vacancies, including
-those with zero similarity. No suitability threshold or filter is applied.
-
-Scores reflect textual overlap, not a probability of suitability. For example,
-0.33 does not mean a vacancy is 33% suitable. A chemist-analyst can share the
-word аналитик with a data analyst while requiring a different profession.
-
-TF-IDF weights depend on the collection of titles. Scores can therefore change
-when the vacancy dataset changes. The manual job-title dictionary applies to
-the candidate's target position only; it is not a general translation system.
-
-fit_transform fits the text vectorizer's vocabulary and weights. It does
-not train a supervised classifier on examples labelled suitable/unsuitable.
-Validation so far
-The updated feature script was checked on a small artificial vacancy dataset:
-default resume selection, explicit cook resume selection, expected exact-title
-ranking, separate output files, and retention of all input rows were verified.
-
-These checks verify basic script behavior. They do not measure matching quality
-on real vacancies. An automated project test suite has not yet been added.
-Next steps
-1. Inspect complete API records for additional skill and experience information.
-2. If real requirements are unavailable, prepare a clearly marked synthetic
-   demonstration dataset separately from the original API data. Do not present
-   invented requirements as actual employer requirements.
-3. Add skill, experience, and salary compatibility features, distinguishing
-   unknown requirements from mismatches.
-4. Prepare resume-vacancy pairs with independently assigned suitable/unsuitable
-   labels and short reasons.
-5. Train a simple supervised model and evaluate it on held-out examples, keeping
-   duplicate or near-duplicate vacancies together when splitting the data.
-6. Produce recommendations with explanations and explicit unknowns.
-7. Generate resume improvement suggestions and a short cover letter using only
-   supported candidate facts.
-8. Integrate and test the complete workflow.
-The current repository is an initial title-similarity baseline, not a completed
-resume-to-vacancy recommendation system.
-Run the scripts from the project root directory.
-
-Download vacancies:
-
-```bash
-python fetch_vacancies.py
 ```
 
-Analyze the dataset:
+### Step 4. Update pip
 
 ```bash
-python analyze_vacancies.py
+python -m pip install --upgrade pip
 ```
 
-Check API pages:
+### Step 5. Install the Project
 
 ```bash
-python check_api_pages.py
+python -m pip install -e .
 ```
 
-Analyze relevant job titles:
+Editable installation allows the package to be imported without manually configuring `PYTHONPATH`.
+
+### Step 6. Install Development Tools
 
 ```bash
-python check_job_titles.py
+python -m pip install pytest ruff
 ```
 
-Display the fictional resume:
+## 8. Usage
+
+Run all commands from the project root directory.
+
+### 8.1. Analyze the Original Dataset
 
 ```bash
-python load_resume.py
+python scripts/analyze_vacancies.py
 ```
 
-Calculate job title similarity:
+The script displays:
+
+- Total number of vacancies.
+- Number of companies.
+- Missing values.
+- Qualification information.
+- Salary statistics.
+- Most frequent job titles.
+- Description quality.
+- Vacancy creation dates.
+
+### 8.2. Match the Data Analyst Resume
 
 ```bash
-python feature_engineering.py
+python scripts/match_resume.py
 ```
 
-The feature engineering script saves the results to:
+The default resume is:
 
-`data/vacancies_features.csv`
+`data/samples/resume_data_analyst.json`
 
-## Next Steps
+The script loads the original vacancy dataset and calculates job title similarity.
 
-The following components are planned:
+Results are saved to:
 
-1. Prepare synthetic job requirements and training examples.
-2. Extend feature engineering to include skills, experience, and salary compatibility.
-3. Train a machine learning classification model.
-4. Evaluate model performance.
-5. Rank suitable vacancies and explain matching results.
-6. Generate resume improvement recommendations.
-7. Generate a short cover letter for a selected vacancy.
-8. Integrate the components into a complete pipeline.
+`data/processed/vacancies_features_resume_data_analyst.csv`
 
-## Notes
+### 8.3. Match the Cook Resume
 
-The project is currently at the data analysis and initial feature engineering stage.
+```bash
+python scripts/match_resume.py --resume data/samples/resume_cook.json
+```
 
-The machine learning classification model has not yet been trained.
+Results are saved to:
 
-Future improvements will focus on expanding the feature set and incorporating more detailed job requirements.
+`data/processed/vacancies_features_resume_cook.csv`
+
+### 8.4. Use a Custom Resume
+
+```bash
+python scripts/match_resume.py --resume path/to/resume.json
+```
+
+The JSON file must contain a valid candidate profile compatible with the `Resume` model.
+
+### 8.5. Use a Custom Vacancy Dataset
+
+```bash
+python scripts/match_resume.py --vacancies path/to/vacancies.csv
+```
+
+The vacancy dataset must contain a `title` column.
+
+### 8.6. Compare the Original and Refactored Models
+
+```bash
+python scripts/compare_models.py
+```
+
+This script compares the baseline scores with previously saved results.
+
+During refactoring, the comparison confirmed:
+
+```text
+Количество вакансий: 31350
+Оценки совпадают: True
+```
+
+This verifies that the refactoring preserved the original TF-IDF similarity scores on the tested dataset.
+
+It does not establish that the ranking is professionally accurate.
+
+## 9. Testing and Code Quality
+
+### Automated Tests
+
+Run:
+
+```bash
+python -m pytest tests -q
+```
+
+Latest verified result:
+
+```text
+17 passed
+```
+
+The tests cover:
+
+- Domain model validation.
+- Vacancy repository operations.
+- Matching service behavior.
+
+Additional tests will be required for future API integrations and new matching features.
+
+### Ruff
+
+Run:
+
+```bash
+python -m ruff check src tests scripts
+```
+
+Ruff is used to check code quality and identify common Python issues.
+
+Individual scripts can also be checked separately.
+
+## 10. Current Matching Results
+
+The current implementation successfully processes all 31,350 vacancies from the original dataset.
+
+For the example Junior Data Analyst resume, some highly ranked titles include:
+
+- Economist-Analyst
+- Programmer-Analyst
+- Statistician-Analyst
+- Research Analyst
+- Financial Analyst
+
+These results demonstrate both the functionality and the limitations of title-based matching.
+
+For example, a Chemist-Analyst vacancy may receive a similarity score because its title includes the word "Analyst", even though its actual professional requirements may be unrelated to data analysis.
+
+The similarity score is not a probability of candidate suitability.
+
+A score of 0.33 does not mean that a candidate is 33% suitable for a vacancy.
+
+The current system provides a baseline for further development rather than a complete recommendation model.
+
+## 11. Refactoring Results
+
+The project was reorganized to improve maintainability, testability, and extensibility.
+
+Completed improvements include:
+
+- Modular package architecture.
+- Separation of domain models, repositories, matching algorithms, and services.
+- Pydantic validation.
+- Structured logging.
+- Input validation and error handling.
+- Type annotations.
+- Automated testing using Pytest.
+- Code quality checks using Ruff.
+- Centralized configuration of data paths.
+- Support for editable package installation.
+- Separation of raw data, processed results, and example resumes.
+- Preservation of original TF-IDF matching results.
+
+The refactored model was successfully tested against the initial dataset of 31,350 vacancies.
+
+## 12. Next Steps
+
+### 12.1. Himalayas API Integration
+
+Implement a dedicated API client for retrieving remote job vacancies.
+
+The new integration should include:
+
+- API request handling.
+- Pagination where supported.
+- Error handling and retries.
+- Structured logging.
+- Response validation.
+- Data normalization.
+- Storage of raw vacancy data.
+
+The availability and completeness of job requirement fields will be evaluated after integration.
+
+### 12.2. Improved Matching Features
+
+Extend the matching algorithm to consider:
+
+- Job title similarity.
+- Required and candidate skills.
+- Professional experience.
+- Education.
+- Salary expectations.
+
+Missing requirements should be treated as unknown rather than automatically interpreted as mismatches.
+
+### 12.3. Matching Quality Evaluation
+
+Prepare independently evaluated resume-vacancy examples.
+
+Compare the existing title-based baseline with improved matching approaches.
+
+Evaluate ranking quality using appropriate metrics and clearly defined evaluation criteria.
+
+### 12.4. Recommendations and Explanations
+
+Develop functionality to:
+
+- Explain why vacancies are recommended.
+- Identify missing or partially matching skills.
+- Suggest resume improvements.
+- Generate short vacancy-specific cover letters.
+
+Generated recommendations must distinguish verified information from assumptions.
+
+### 12.5. Integration Testing
+
+Add tests for:
+
+- Himalayas API client.
+- API response parsing.
+- Data transformation.
+- Skill matching.
+- Experience matching.
+- Salary compatibility.
+- End-to-end matching workflow.
+
+## 13. Project Limitations
+
+The current implementation has several known limitations:
+
+1. Vacancy descriptions in the initial dataset contain insufficient professional requirements.
+2. Matching is based only on job title similarity.
+3. Candidate skills, experience, education, and expected salary are not yet included in ranking.
+4. A supervised suitability classification model has not been trained.
+5. Matching quality has not yet been evaluated against independently labeled real-world examples.
+6. The Himalayas API integration is planned but not yet implemented.
+7. Resume improvement recommendations and cover letter generation are future features.
+
+These limitations are documented to avoid overstating the capabilities of the current system.
+
+## 14. Project Status
+
+**Completed:**
+
+- Initial vacancy data collection.
+- Exploratory data analysis.
+- Data quality assessment.
+- Baseline TF-IDF matching.
+- Project architecture refactoring.
+- Structured resume and vacancy models.
+- Data repositories.
+- Logging and input validation.
+- Automated tests.
+- Model comparison.
+- Updated data organization.
+
+**In Progress / Planned:**
+
+- Himalayas API integration.
+- Matching by skills and experience.
+- Salary and education compatibility.
+- Matching quality evaluation.
+- Recommendation explanations.
+- Resume improvement suggestions.
+- Cover letter generation.

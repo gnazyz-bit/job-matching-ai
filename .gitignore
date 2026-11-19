@@ -21,3 +21,10 @@ __pycache__/
 # Operating system files
 .DS_Store
 Thumbs.db
+
+# Python package metadata
+*.egg-info/
+
+# Python build artifacts
+build/
+dist/

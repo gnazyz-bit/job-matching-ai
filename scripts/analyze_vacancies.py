@@ -1,8 +1,9 @@
-
 import pandas as pd
 
+from job_matching.config import CAP_PVL_VACANCIES
+
 # 1. Загружаем данные
-df = pd.read_csv("data/vacancies.csv")
+df = pd.read_csv(CAP_PVL_VACANCIES)
 
 print("=== ОБЩАЯ ИНФОРМАЦИЯ ===")
 print("Количество вакансий:", len(df))
