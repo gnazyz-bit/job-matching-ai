@@ -4,7 +4,6 @@
 import re
 from typing import Dict, List
 
-
 SKILL_PATTERNS = {
     "Python": r"\bpython\b",
     "SQL": r"\bsql\b",
