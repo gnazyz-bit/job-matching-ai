@@ -1,0 +1,1 @@
+profile_id,vacancy_id,title_similarity,role_overlap,skill_overlap,experience_fit,salary_fit,salary_known,matched_skills,mentioned_skills,model_score,match_score
