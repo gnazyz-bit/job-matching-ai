@@ -28,3 +28,4 @@ Thumbs.db
 # Python build artifacts
 build/
 dist/
+data/processed/job_matching_results/

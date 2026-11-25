@@ -1,0 +1,373 @@
+[
+  {
+    "target_position": "Junior Data Analyst",
+    "skills": [
+      "Python",
+      "SQL",
+      "Excel"
+    ],
+    "experience_years": 0,
+    "expected_salary": 2500,
+    "salary_currency": "USD"
+  },
+  {
+    "target_position": "Data Analyst",
+    "skills": [
+      "Python",
+      "SQL",
+      "Excel",
+      "Power BI",
+      "Pandas",
+      "Tableau"
+    ],
+    "experience_years": 3,
+    "expected_salary": 4500,
+    "salary_currency": "USD"
+  },
+  {
+    "target_position": "Data Analyst",
+    "skills": [
+      "Python",
+      "SQL",
+      "Excel",
+      "Power BI",
+      "Pandas",
+      "Tableau"
+    ],
+    "experience_years": 7,
+    "expected_salary": 7500,
+    "salary_currency": "USD"
+  },
+  {
+    "target_position": "Junior Data Engineer",
+    "skills": [
+      "Python",
+      "SQL",
+      "Spark"
+    ],
+    "experience_years": 0,
+    "expected_salary": 2500,
+    "salary_currency": "USD"
+  },
+  {
+    "target_position": "Data Engineer",
+    "skills": [
+      "Python",
+      "SQL",
+      "Spark",
+      "Databricks",
+      "AWS"
+    ],
+    "experience_years": 3,
+    "expected_salary": 4500,
+    "salary_currency": "USD"
+  },
+  {
+    "target_position": "Data Engineer",
+    "skills": [
+      "Python",
+      "SQL",
+      "Spark",
+      "Databricks",
+      "AWS"
+    ],
+    "experience_years": 7,
+    "expected_salary": 7500,
+    "salary_currency": "USD"
+  },
+  {
+    "target_position": "Junior Software Engineer",
+    "skills": [
+      "Python",
+      "Java",
+      "JavaScript"
+    ],
+    "experience_years": 0,
+    "expected_salary": 2500,
+    "salary_currency": "USD"
+  },
+  {
+    "target_position": "Software Engineer",
+    "skills": [
+      "Python",
+      "Java",
+      "JavaScript",
+      "Git",
+      "Docker"
+    ],
+    "experience_years": 3,
+    "expected_salary": 4500,
+    "salary_currency": "USD"
+  },
+  {
+    "target_position": "Software Engineer",
+    "skills": [
+      "Python",
+      "Java",
+      "JavaScript",
+      "Git",
+      "Docker"
+    ],
+    "experience_years": 7,
+    "expected_salary": 7500,
+    "salary_currency": "USD"
+  },
+  {
+    "target_position": "Junior Product Manager",
+    "skills": [
+      "Product Management",
+      "Roadmap",
+      "Analytics"
+    ],
+    "experience_years": 0,
+    "expected_salary": 2500,
+    "salary_currency": "USD"
+  },
+  {
+    "target_position": "Product Manager",
+    "skills": [
+      "Product Management",
+      "Roadmap",
+      "Analytics",
+      "Agile"
+    ],
+    "experience_years": 3,
+    "expected_salary": 4500,
+    "salary_currency": "USD"
+  },
+  {
+    "target_position": "Product Manager",
+    "skills": [
+      "Product Management",
+      "Roadmap",
+      "Analytics",
+      "Agile"
+    ],
+    "experience_years": 7,
+    "expected_salary": 7500,
+    "salary_currency": "USD"
+  },
+  {
+    "target_position": "Junior Project Manager",
+    "skills": [
+      "Project Management",
+      "Agile",
+      "Scrum"
+    ],
+    "experience_years": 0,
+    "expected_salary": 2500,
+    "salary_currency": "USD"
+  },
+  {
+    "target_position": "Project Manager",
+    "skills": [
+      "Project Management",
+      "Agile",
+      "Scrum",
+      "Jira"
+    ],
+    "experience_years": 3,
+    "expected_salary": 4500,
+    "salary_currency": "USD"
+  },
+  {
+    "target_position": "Project Manager",
+    "skills": [
+      "Project Management",
+      "Agile",
+      "Scrum",
+      "Jira"
+    ],
+    "experience_years": 7,
+    "expected_salary": 7500,
+    "salary_currency": "USD"
+  },
+  {
+    "target_position": "Junior Marketing Specialist",
+    "skills": [
+      "SEO",
+      "Google Analytics",
+      "Marketing"
+    ],
+    "experience_years": 0,
+    "expected_salary": 2500,
+    "salary_currency": "USD"
+  },
+  {
+    "target_position": "Marketing Specialist",
+    "skills": [
+      "SEO",
+      "Google Analytics",
+      "Marketing",
+      "Content"
+    ],
+    "experience_years": 3,
+    "expected_salary": 4500,
+    "salary_currency": "USD"
+  },
+  {
+    "target_position": "Marketing Specialist",
+    "skills": [
+      "SEO",
+      "Google Analytics",
+      "Marketing",
+      "Content"
+    ],
+    "experience_years": 7,
+    "expected_salary": 7500,
+    "salary_currency": "USD"
+  },
+  {
+    "target_position": "Junior Sales Representative",
+    "skills": [
+      "Sales",
+      "CRM",
+      "Salesforce"
+    ],
+    "experience_years": 0,
+    "expected_salary": 2500,
+    "salary_currency": "USD"
+  },
+  {
+    "target_position": "Sales Representative",
+    "skills": [
+      "Sales",
+      "CRM",
+      "Salesforce",
+      "Negotiation"
+    ],
+    "experience_years": 3,
+    "expected_salary": 4500,
+    "salary_currency": "USD"
+  },
+  {
+    "target_position": "Sales Representative",
+    "skills": [
+      "Sales",
+      "CRM",
+      "Salesforce",
+      "Negotiation"
+    ],
+    "experience_years": 7,
+    "expected_salary": 7500,
+    "salary_currency": "USD"
+  },
+  {
+    "target_position": "Junior UX Designer",
+    "skills": [
+      "Figma",
+      "UX",
+      "UI"
+    ],
+    "experience_years": 0,
+    "expected_salary": 2500,
+    "salary_currency": "USD"
+  },
+  {
+    "target_position": "UX Designer",
+    "skills": [
+      "Figma",
+      "UX",
+      "UI",
+      "Prototyping"
+    ],
+    "experience_years": 3,
+    "expected_salary": 4500,
+    "salary_currency": "USD"
+  },
+  {
+    "target_position": "UX Designer",
+    "skills": [
+      "Figma",
+      "UX",
+      "UI",
+      "Prototyping"
+    ],
+    "experience_years": 7,
+    "expected_salary": 7500,
+    "salary_currency": "USD"
+  },
+  {
+    "target_position": "Junior Customer Support",
+    "skills": [
+      "Customer Support",
+      "Zendesk",
+      "Communication"
+    ],
+    "experience_years": 0,
+    "expected_salary": 2500,
+    "salary_currency": "USD"
+  },
+  {
+    "target_position": "Customer Support",
+    "skills": [
+      "Customer Support",
+      "Zendesk",
+      "Communication"
+    ],
+    "experience_years": 3,
+    "expected_salary": 4500,
+    "salary_currency": "USD"
+  },
+  {
+    "target_position": "Customer Support",
+    "skills": [
+      "Customer Support",
+      "Zendesk",
+      "Communication"
+    ],
+    "experience_years": 7,
+    "expected_salary": 7500,
+    "salary_currency": "USD"
+  },
+  {
+    "target_position": "Junior Financial Analyst",
+    "skills": [
+      "Excel",
+      "Financial Modeling",
+      "Finance"
+    ],
+    "experience_years": 0,
+    "expected_salary": 2500,
+    "salary_currency": "USD"
+  },
+  {
+    "target_position": "Financial Analyst",
+    "skills": [
+      "Excel",
+      "Financial Modeling",
+      "Finance",
+      "SQL"
+    ],
+    "experience_years": 3,
+    "expected_salary": 4500,
+    "salary_currency": "USD"
+  },
+  {
+    "target_position": "Financial Analyst",
+    "skills": [
+      "Excel",
+      "Financial Modeling",
+      "Finance",
+      "SQL"
+    ],
+    "experience_years": 7,
+    "expected_salary": 7500,
+    "salary_currency": "USD"
+  },
+  {
+    "target_position": "Junior Data Analyst",
+    "skills": [
+      "Python",
+      "SQL",
+      "Pandas",
+      "Excel",
+      "Data Analysis",
+      "Data Visualization"
+    ],
+    "experience_years": 0.0,
+    "education": "Высшее образование",
+    "expected_salary": 150000.0,
+    "salary_currency": null
+  }
+]
