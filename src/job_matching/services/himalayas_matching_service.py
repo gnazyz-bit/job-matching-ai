@@ -1,6 +1,7 @@
 
 """Experimental resume matching service for Himalayas vacancies."""
 import ast
+import re
 from typing import List
 
 import pandas as pd
@@ -88,6 +89,41 @@ def calculate_seniority_score(
 
     return 0.5
 
+def calculate_role_score(
+    candidate_title: str,
+    vacancy_title: str,
+) -> float:
+    """Estimate professional role similarity."""
+
+    def normalize(text: str) -> set:
+        text = re.sub(r"[^a-z0-9\s]", " ", text.lower())
+
+        ignored = {
+            "junior", "jr", "senior", "sr",
+            "lead", "entry", "level",
+        }
+
+        return {
+            word
+            for word in text.split()
+            if word not in ignored
+        }
+
+    candidate_words = normalize(candidate_title)
+    vacancy_words = normalize(vacancy_title)
+
+    if not candidate_words:
+        return 0.0
+
+    matched_words = candidate_words & vacancy_words
+
+    if matched_words == candidate_words:
+        return 1.0
+
+    if matched_words:
+        return 0.5
+
+    return 0.0
 
 def match_himalayas_vacancies(
     resume: Resume,
@@ -152,10 +188,19 @@ def match_himalayas_vacancies(
             else 0.5
         )
 
-        final_score = (
+        role_score = calculate_role_score(
+            resume.target_position,
+            str(job["title"]),
+        )
+
+        base_score = (
             0.45 * title_score
             + 0.35 * skill_score
             + 0.20 * seniority_score
+        )
+
+        final_score = base_score * (
+            0.3 + 0.7 * role_score
         )
 
         result = job.to_dict()
@@ -168,6 +213,7 @@ def match_himalayas_vacancies(
                 skills_result["matched_skills"]
             ),
             "seniority_score": round(seniority_score, 4),
+            "role_score": round(role_score, 4),
             "other_mentioned_skills": ", ".join(
                 skills_result["unmatched_skills"]
             ),
